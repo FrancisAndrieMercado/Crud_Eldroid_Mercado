@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "935772383597",
+    "project_id": "eldroidfinal-7d01a",
+    "storage_bucket": "eldroidfinal-7d01a.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:935772383597:android:5a36577eb50e3ed5db9264",
+        "android_client_info": {
+          "package_name": "com.example.crud_firebase_storage_mercado_bsit"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "935772383597-sbiadqvsa874959dso35s7u48oaqlqc3.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA1yoNML5jzumIcNecgobPwCUSTXv8U3Kg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "935772383597-sbiadqvsa874959dso35s7u48oaqlqc3.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
