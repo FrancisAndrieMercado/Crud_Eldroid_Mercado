@@ -3,8 +3,9 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="..\:/Users/LENOVO/AndroidStudioProjects/Crud_Firebase_Storage_Mercado_BSIT/app/src/main/res/layout/activity_add_food.xml" value="0.264" />
         <entry key="..\:/Users/LENOVO/AndroidStudioProjects/Crud_Firebase_Storage_Mercado_BSIT/app/src/main/res/layout/activity_login.xml" value="0.25" />
-        <entry key="..\:/Users/LENOVO/AndroidStudioProjects/Crud_Firebase_Storage_Mercado_BSIT/app/src/main/res/layout/activity_main.xml" value="0.25" />
+        <entry key="..\:/Users/LENOVO/AndroidStudioProjects/Crud_Firebase_Storage_Mercado_BSIT/app/src/main/res/layout/activity_main.xml" value="0.176" />
         <entry key="..\:/Users/LENOVO/AndroidStudioProjects/Crud_Firebase_Storage_Mercado_BSIT/app/src/main/res/layout/activity_register.xml" value="0.25" />
         <entry key="..\:/Users/LENOVO/AndroidStudioProjects/Crud_Firebase_Storage_Mercado_BSIT/app/src/main/res/layout/activity_update.xml" value="0.25" />
         <entry key="..\:/Users/LENOVO/AndroidStudioProjects/Crud_Firebase_Storage_Mercado_BSIT/app/src/main/res/layout/single_item.xml" value="0.25" />

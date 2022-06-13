@@ -1,14 +1,5 @@
 package com.example.crud_firebase_storage_mercado_bsit;
 
-import androidx.activity.result.ActivityResultCallback;
-import androidx.activity.result.ActivityResultLauncher;
-import androidx.activity.result.contract.ActivityResultContracts;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
-
 import android.Manifest;
 import android.content.ContentResolver;
 import android.content.Intent;
@@ -21,6 +12,15 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
+
+import androidx.activity.result.ActivityResultCallback;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -38,10 +38,10 @@ import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.squareup.picasso.Picasso;
 
-public class UpdateActivity extends AppCompatActivity {
+public class AddActivity extends AppCompatActivity {
     EditText foodNameET, quantityET, priceET, descriptionET;
     String foodNameTxt, quantityTxt, priceTxt, descriptionTxt, UID, imgURL;
-    ImageView foodUpdateIV;
+    ImageView foodaddIV;
     Button saveBtn;
     StorageReference storageReference;
     Uri uri1;
@@ -53,45 +53,26 @@ public class UpdateActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_update);
+        setContentView(R.layout.activity_add_food);
         reference = FirebaseDatabase.getInstance().getReference("Food");
-        foodUpdateIV=(ImageView)findViewById(R.id.iv_food_update);
-        foodNameET=(EditText)findViewById(R.id.et_food_name);
-        quantityET=(EditText)findViewById(R.id.et_quantity);
-        priceET=(EditText)findViewById(R.id.et_price);
-        descriptionET=(EditText)findViewById(R.id.et_description);
-        saveBtn=(Button)findViewById(R.id.btn_save);
+        foodaddIV=(ImageView)findViewById(R.id.iv_food_add);
+        foodNameET=(EditText)findViewById(R.id.et_food_name_add);
+        quantityET=(EditText)findViewById(R.id.et_quantity_add);
+        priceET=(EditText)findViewById(R.id.et_price_add);
+        descriptionET=(EditText)findViewById(R.id.et_description_add);
+        saveBtn=(Button)findViewById(R.id.btn_save_add);
 
         verifyPermissions();
-        Bundle bundle = getIntent().getExtras();
-        if(bundle != null) {
-            UID = bundle.getString("UID");
-            reference.child(auth.getUid()).orderByKey().equalTo(UID).addChildEventListener(new ChildEventListener() {
-                @Override
-                public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
-                    Picasso.get().load(snapshot.child("imgURL").getValue().toString()).into(foodUpdateIV);
-                    imgURL = snapshot.child("imgURL").getValue().toString();
-                    foodNameET.setText(snapshot.child("foodName").getValue().toString());
-                    quantityET.setText(snapshot.child("quantity").getValue().toString());
-                    priceET.setText(snapshot.child("price").getValue().toString());
-                    descriptionET.setText(snapshot.child("description").getValue().toString());
-                }
-                @Override public void onChildChanged(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) { }
-                @Override public void onChildRemoved(@NonNull DataSnapshot snapshot) { }
-                @Override public void onChildMoved(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) { }
-                @Override public void onCancelled(@NonNull DatabaseError error) { }
-            });
-        }
         ActivityResultLauncher<String> getContent = registerForActivityResult(new ActivityResultContracts.GetContent(),
                 new ActivityResultCallback<Uri>() {
                     @Override
                     public void onActivityResult(Uri uri) {
-                        foodUpdateIV.setImageURI(uri);
+                        foodaddIV.setImageURI(uri);
                         uri1 = uri;
                         isThere = true;
                     }
                 });
-        foodUpdateIV.setOnClickListener(new View.OnClickListener() {
+        foodaddIV.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent();
@@ -108,16 +89,16 @@ public class UpdateActivity extends AppCompatActivity {
                 descriptionTxt = descriptionET.getText().toString();
 
                 if(foodNameTxt.isEmpty() || quantityTxt.isEmpty() || priceTxt.isEmpty() || descriptionTxt.isEmpty()){
-                    Toast.makeText(UpdateActivity.this, "Please fill all empty fields!", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(AddActivity.this, "Please fill all empty fields!", Toast.LENGTH_SHORT).show();
                 }else{
                     if(isThere == true){
                         upload();
-                        Toast.makeText(UpdateActivity.this, "Successfully Updated", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(AddActivity.this, "Successfully Added", Toast.LENGTH_SHORT).show();
                     }else{
                         FoodModel model = new FoodModel(UID,foodNameTxt,quantityTxt,priceTxt,descriptionTxt,imgURL);
                         reference.child(auth.getUid()).child(UID).setValue(model);
-                        Intent intent = new Intent(UpdateActivity.this,MainActivity.class);
-                        Toast.makeText(UpdateActivity.this, "Successfully Updated", Toast.LENGTH_SHORT).show();
+                        Intent intent = new Intent(AddActivity.this,MainActivity.class);
+                        Toast.makeText(AddActivity.this, "Successfully Added", Toast.LENGTH_SHORT).show();
                     }
                 }
             }
@@ -138,7 +119,7 @@ public class UpdateActivity extends AppCompatActivity {
                     public void onSuccess(Uri uri) {
                         ImageModel imageModel = new ImageModel("FoodPicture", uri.toString());
                         FoodModel model= new FoodModel(auth.getUid(),foodNameET.getText().toString(),quantityET.getText().toString(),priceET.getText().toString(),descriptionET.getText().toString(),imageModel.getImageUrl());
-                        reference.child(auth.getUid()).setValue(model);}
+                        reference.child(auth.getUid()).push().setValue(model);}
                 });
             }
         }).addOnFailureListener(new OnFailureListener() {

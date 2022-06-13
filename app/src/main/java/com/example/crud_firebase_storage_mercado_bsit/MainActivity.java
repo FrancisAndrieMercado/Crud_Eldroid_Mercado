@@ -8,8 +8,8 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.google.firebase.auth.FirebaseAuth;
@@ -26,10 +26,12 @@ import java.util.ArrayList;
 public class MainActivity extends AppCompatActivity {
     RecyclerView recyclerView;
     DatabaseReference reference;
-    EmployeeAdapter adapter;
+    FoodAdapter adapter;
     FirebaseAuth auth = FirebaseAuth.getInstance();
     TextView logoutTV;
-    ArrayList<EmployeeModel> usersList;
+    FirebaseUser user;
+    ImageView addBTN;
+    ArrayList<FoodModel> usersList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,23 +39,25 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         recyclerView = (RecyclerView)findViewById(R.id.rv);
         logoutTV = (TextView) findViewById(R.id.tv_log_out);
-        reference = FirebaseDatabase.getInstance().getReference("Employee");
+        addBTN = (ImageView) findViewById(R.id.iv_add_info);
+        reference = FirebaseDatabase.getInstance().getReference("Food");
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        usersList = new ArrayList<>();
+        usersList = new ArrayList<FoodModel>();
         recyclerView.setAdapter(adapter);
+        user = FirebaseAuth.getInstance().getCurrentUser();
 
-        reference.orderByKey().addChildEventListener(new ChildEventListener() {
+        reference.child(user.getUid()).orderByKey().addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
-                EmployeeModel model;
+                FoodModel model;
                 String id = snapshot.getKey();
                 String imgURL = snapshot.child("imgURL").getValue().toString();
-                String fullname = snapshot.child("name").getValue().toString();
-                String address = snapshot.child("address").getValue().toString();
-                String email = snapshot.child("email").getValue().toString();
-                String number = snapshot.child("number").getValue().toString();
-                model = new EmployeeModel(id,fullname,email,address,number,imgURL);
+                String foodName = snapshot.child("foodName").getValue().toString();
+                String quantity = snapshot.child("quantity").getValue().toString();
+                String price = snapshot.child("price").getValue().toString();
+                String description = snapshot.child("description").getValue().toString();
+                model = new FoodModel(id,foodName,quantity,price,description,imgURL);
                 usersList.add(model);
                 recyclerView.setAdapter(adapter);
                 adapter.notifyDataSetChanged();
@@ -63,9 +67,9 @@ public class MainActivity extends AppCompatActivity {
             @Override public void onChildMoved(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) { }
             @Override public void onCancelled(@NonNull DatabaseError error) { }
         });
-        adapter = new EmployeeAdapter(usersList, new EmployeeAdapter.itemOnClick() {
+        adapter = new FoodAdapter(usersList, new FoodAdapter.itemOnClick() {
             @Override
-            public void itemDelete(int position, EmployeeModel model) {
+            public void itemDelete(int position, FoodModel model) {
                 reference.orderByKey().equalTo(model.getUID()).addValueEventListener(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -80,7 +84,7 @@ public class MainActivity extends AppCompatActivity {
                 });
             }
             @Override
-            public void itemEdit(EmployeeModel model) {
+            public void itemEdit(FoodModel model) {
                 Intent intent = new Intent(MainActivity.this,UpdateActivity.class);
                 intent.putExtra("UID", model.getUID());
                 startActivity(intent);
@@ -91,6 +95,12 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View view) {
                 auth.signOut();
                 startActivity(new Intent(MainActivity.this, LoginActivity.class));
+            }
+        });
+        addBTN.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity(new Intent(MainActivity.this, AddActivity.class));
             }
         });
 

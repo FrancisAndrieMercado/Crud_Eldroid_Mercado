@@ -13,46 +13,45 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
-import java.util.List;
 
-public class EmployeeAdapter extends RecyclerView.Adapter<EmployeeAdapter.MyViewHolder> {
-    private ArrayList<EmployeeModel>userList;
+public class FoodAdapter extends RecyclerView.Adapter<FoodAdapter.MyViewHolder> {
+    private ArrayList<FoodModel>userList;
     itemOnClick listener;
 
-    public EmployeeAdapter(ArrayList<EmployeeModel> userList, itemOnClick listener){
+    public FoodAdapter(ArrayList<FoodModel> userList, itemOnClick listener){
         this.userList = userList;
         this.listener = listener;
     }
     public class MyViewHolder extends RecyclerView.ViewHolder{
-        TextView name,address,number,email;
+        TextView foodname,quantity,price,description;
         Button edit, delete;
         ImageView imageView;
         public MyViewHolder(@NonNull View itemView) {
             super(itemView);
-            imageView = (ImageView) itemView.findViewById(R.id.iv_profile);
-            name = (TextView) itemView.findViewById(R.id.tv_fullname);
-            address = (TextView) itemView.findViewById(R.id.tv_address);
-            number = (TextView) itemView.findViewById(R.id.tv_number);
-            email = (TextView) itemView.findViewById(R.id.tv_email);
+            imageView = (ImageView) itemView.findViewById(R.id.iv_food);
+            foodname = (TextView) itemView.findViewById(R.id.tv_food_name);
+            quantity = (TextView) itemView.findViewById(R.id.tv_quantity);
+            price = (TextView) itemView.findViewById(R.id.tv_price);
+            description = (TextView) itemView.findViewById(R.id.tv_description);
             edit = (Button) itemView.findViewById(R.id.btn_edit);
             delete = (Button) itemView.findViewById(R.id.btn_delete);
         }
     }
     @NonNull
-    @Override public EmployeeAdapter.MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    @Override public FoodAdapter.MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.single_item, parent, false);
         return new MyViewHolder(itemView);
     }
     public interface itemOnClick{
-        void itemDelete(int pos, EmployeeModel model);
-        void itemEdit(EmployeeModel model);
+        void itemDelete(int pos, FoodModel model);
+        void itemEdit(FoodModel model);
     }
-    @Override public void onBindViewHolder(@NonNull EmployeeAdapter.MyViewHolder holder, int position) {
+    @Override public void onBindViewHolder(@NonNull FoodAdapter.MyViewHolder holder, int position) {
         Picasso.get().load(userList.get(position).getImgURL()).into(holder.imageView);
-        holder.name.setText(userList.get(position).getName());
-        holder.address.setText(userList.get(position).getAddress());
-        holder.email.setText(userList.get(position).getEmail());
-        holder.number.setText(userList.get(position).getNumber());
+        holder.foodname.setText(userList.get(position).getFoodName());
+        holder.quantity.setText(userList.get(position).getQuantity());
+        holder.price.setText(userList.get(position).getPrice());
+        holder.description.setText(userList.get(position).getDescription());
         holder.edit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
