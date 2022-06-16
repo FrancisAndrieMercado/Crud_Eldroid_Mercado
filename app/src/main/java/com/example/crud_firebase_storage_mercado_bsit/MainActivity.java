@@ -82,37 +82,33 @@ public class MainActivity extends AppCompatActivity {
         });
 
         reference.child(user.getUid()).orderByKey().addChildEventListener(new ChildEventListener() {
-                                @Override
-                                public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
-                                    FoodModel model;
-                                    String id = snapshot.getKey();
-                                    String imgURL = snapshot.child("imgURL").getValue().toString();
-                                    String foodName = snapshot.child("foodName").getValue().toString();
-                                    String quantity = snapshot.child("quantity").getValue().toString();
-                                    String price = snapshot.child("price").getValue().toString();
-                                    String description = snapshot.child("description").getValue().toString();
-                                    model = new FoodModel(id, foodName, quantity, price, description, imgURL);
-                                    usersList.add(model);
-                                    recyclerView.setAdapter(adapter);
-                                    adapter.notifyDataSetChanged();
-                                }
-
-                                @Override
-                                public void onChildChanged(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
-                                }
-
-                                @Override
-                                public void onChildRemoved(@NonNull DataSnapshot snapshot) {
-                                }
-
-                                @Override
-                                public void onChildMoved(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
-                                }
-
-                                @Override
-                                public void onCancelled(@NonNull DatabaseError error) {
-                                }
-                            });
+        @Override
+        public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
+            FoodModel model;
+            String id = snapshot.getKey();
+            String imgURL = snapshot.child("imgURL").getValue().toString();
+            String foodName = snapshot.child("foodName").getValue().toString();
+            String quantity = snapshot.child("quantity").getValue().toString();
+            String price = snapshot.child("price").getValue().toString();
+            String description = snapshot.child("description").getValue().toString();
+            model = new FoodModel(id, foodName, quantity, price, description, imgURL);
+            usersList.add(model);
+            recyclerView.setAdapter(adapter);
+            adapter.notifyDataSetChanged();
+        }
+        @Override
+        public void onChildChanged(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
+        }
+        @Override
+        public void onChildRemoved(@NonNull DataSnapshot snapshot) {
+        }
+        @Override
+        public void onChildMoved(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
+        }
+        @Override
+        public void onCancelled(@NonNull DatabaseError error) {
+        }
+        });
         adapter = new FoodAdapter(usersList, new FoodAdapter.itemOnClick() {
             @Override
             public void itemDelete(int position, FoodModel model) {
