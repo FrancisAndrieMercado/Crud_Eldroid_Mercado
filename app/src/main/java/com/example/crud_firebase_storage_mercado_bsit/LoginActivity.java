@@ -5,6 +5,9 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.method.HideReturnsTransformationMethod;
+import android.text.method.PasswordTransformationMethod;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -23,7 +26,7 @@ public class LoginActivity extends AppCompatActivity {
     private FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
     private FirebaseAuth auth;
     String emailTxt,passwordTxt;
-
+    Boolean passwordVisible = false;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -34,6 +37,30 @@ public class LoginActivity extends AppCompatActivity {
         final Button loginBtn = (Button) findViewById(R.id.btn_login);
         final TextView registerBtn = (TextView) findViewById(R.id.tv_register_now);
 
+
+        passwordET.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View view, MotionEvent event) {
+                final int Right = 2;
+                if (event.getAction() == MotionEvent.ACTION_UP) {
+                    if (event.getRawX() >= passwordET.getRight() - passwordET.getCompoundDrawables()[Right].getBounds().width()) {
+                        int selection = passwordET.getSelectionEnd();
+                        if (passwordVisible) {
+                            passwordET.setCompoundDrawablesRelativeWithIntrinsicBounds(R.drawable.ic_baseline_lock_24, 0, R.drawable.ic_baseline_visibility_off_24, 0);
+                            passwordET.setTransformationMethod(PasswordTransformationMethod.getInstance());
+                            passwordVisible = false;
+                        } else {
+                            passwordET.setCompoundDrawablesRelativeWithIntrinsicBounds(R.drawable.ic_baseline_lock_24, 0, R.drawable.ic_baseline_visibility_24, 0);
+                            passwordET.setTransformationMethod(HideReturnsTransformationMethod.getInstance());
+                            passwordVisible = true;
+                        }
+                        passwordET.setSelection(selection);
+                        return true;
+                    }
+                }
+                return false;
+            }
+        });
         loginBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

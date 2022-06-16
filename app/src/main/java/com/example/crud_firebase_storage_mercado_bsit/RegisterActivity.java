@@ -14,7 +14,10 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
+import android.text.method.HideReturnsTransformationMethod;
+import android.text.method.PasswordTransformationMethod;
 import android.util.Log;
+import android.view.MotionEvent;
 import android.view.View;
 import android.webkit.MimeTypeMap;
 import android.widget.Button;
@@ -44,6 +47,7 @@ public class RegisterActivity extends AppCompatActivity {
     private FirebaseDatabase rootNode;
     private DatabaseReference reference;
     StorageReference storageReference;
+    Boolean passwordVisible = false;
     Uri uri1;
     final int PICK_IMAGE = 100;
     String fullnameTxt,addressTxt,emailTxt,numberTxt,passwordTxt;
@@ -65,6 +69,29 @@ public class RegisterActivity extends AppCompatActivity {
         TextView loginBtn = (TextView) findViewById(R.id.tv_login_now);
         verifyPermissions();
 
+        passwordET.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View view, MotionEvent event) {
+                final int Right = 2;
+                if (event.getAction() == MotionEvent.ACTION_UP) {
+                    if (event.getRawX() >= passwordET.getRight() - passwordET.getCompoundDrawables()[Right].getBounds().width()) {
+                        int selection = passwordET.getSelectionEnd();
+                        if (passwordVisible) {
+                            passwordET.setCompoundDrawablesRelativeWithIntrinsicBounds(R.drawable.ic_baseline_lock_24, 0, R.drawable.ic_baseline_visibility_off_24, 0);
+                            passwordET.setTransformationMethod(PasswordTransformationMethod.getInstance());
+                            passwordVisible = false;
+                        } else {
+                            passwordET.setCompoundDrawablesRelativeWithIntrinsicBounds(R.drawable.ic_baseline_lock_24, 0, R.drawable.ic_baseline_visibility_24, 0);
+                            passwordET.setTransformationMethod(HideReturnsTransformationMethod.getInstance());
+                            passwordVisible = true;
+                        }
+                        passwordET.setSelection(selection);
+                        return true;
+                    }
+                }
+                return false;
+            }
+        });
         ActivityResultLauncher<String> getContent = registerForActivityResult(new ActivityResultContracts.GetContent(),
                 new ActivityResultCallback<Uri>() {
                     @Override
