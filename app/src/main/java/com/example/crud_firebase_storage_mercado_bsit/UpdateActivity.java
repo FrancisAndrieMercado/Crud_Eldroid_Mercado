@@ -102,6 +102,10 @@ public class UpdateActivity extends AppCompatActivity {
         saveBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                if(uri1 == null){
+                    Toast.makeText(UpdateActivity.this, "Please put some Image!", Toast.LENGTH_SHORT).show();
+                    return;
+                }
                 foodNameTxt = foodNameET.getText().toString();
                 quantityTxt = quantityET.getText().toString();
                 priceTxt = priceET.getText().toString();

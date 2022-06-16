@@ -8,6 +8,7 @@ public class FoodModel {
     private String description;
     private String imgURL;
 
+    public FoodModel(){}
     public FoodModel(String UID, String foodName, String quantity, String price, String description, String imgURL) {
         this.UID = UID;
         this.foodName = foodName;

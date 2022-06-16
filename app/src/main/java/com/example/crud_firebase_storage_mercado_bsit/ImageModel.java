@@ -4,7 +4,6 @@ public class ImageModel {
     private String imageName;
     private String imageUrl;
 
-
     public ImageModel(String imageName, String imageUrl) {
         if (imageName.trim().equals("")) {
             imageName = "nameless";

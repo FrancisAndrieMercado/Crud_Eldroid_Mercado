@@ -22,6 +22,7 @@ public class FoodAdapter extends RecyclerView.Adapter<FoodAdapter.MyViewHolder> 
         this.userList = userList;
         this.listener = listener;
     }
+
     public class MyViewHolder extends RecyclerView.ViewHolder{
         TextView foodname,quantity,price,description;
         Button edit, delete;

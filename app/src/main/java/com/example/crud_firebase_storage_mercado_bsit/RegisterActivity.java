@@ -112,6 +112,10 @@ public class RegisterActivity extends AppCompatActivity {
         registerBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                if(uri1 == null){
+                    Toast.makeText(RegisterActivity.this, "Please put some Image!", Toast.LENGTH_SHORT).show();
+                    return;
+                }
                 fullnameTxt = fullnameET.getText().toString();
                 addressTxt = addressET.getText().toString();
                 numberTxt = numberET.getText().toString();

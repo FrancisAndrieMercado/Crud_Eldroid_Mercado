@@ -8,9 +8,13 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -27,6 +31,8 @@ public class MainActivity extends AppCompatActivity {
     RecyclerView recyclerView;
     DatabaseReference reference;
     FoodAdapter adapter;
+    EditText searchET;
+    Button searchBtn;
     FirebaseAuth auth = FirebaseAuth.getInstance();
     TextView logoutTV;
     FirebaseUser user;
@@ -40,6 +46,8 @@ public class MainActivity extends AppCompatActivity {
         recyclerView = (RecyclerView)findViewById(R.id.rv);
         logoutTV = (TextView) findViewById(R.id.tv_log_out);
         addBTN = (ImageView) findViewById(R.id.iv_add_info);
+        searchBtn = (Button) findViewById(R.id.btn_search);
+        searchET = (EditText) findViewById(R.id.et_search);
         reference = FirebaseDatabase.getInstance().getReference("Food");
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
@@ -47,26 +55,64 @@ public class MainActivity extends AppCompatActivity {
         recyclerView.setAdapter(adapter);
         user = FirebaseAuth.getInstance().getCurrentUser();
 
-        reference.child(user.getUid()).orderByKey().addChildEventListener(new ChildEventListener() {
-            @Override
-            public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
-                FoodModel model;
-                String id = snapshot.getKey();
-                String imgURL = snapshot.child("imgURL").getValue().toString();
-                String foodName = snapshot.child("foodName").getValue().toString();
-                String quantity = snapshot.child("quantity").getValue().toString();
-                String price = snapshot.child("price").getValue().toString();
-                String description = snapshot.child("description").getValue().toString();
-                model = new FoodModel(id,foodName,quantity,price,description,imgURL);
-                usersList.add(model);
-                recyclerView.setAdapter(adapter);
-                adapter.notifyDataSetChanged();
+        searchBtn.setOnClickListener(new View.OnClickListener() {
+        @Override
+        public void onClick(View view) {
+            if (searchET.getText().toString().isEmpty()) {
+                Toast.makeText(MainActivity.this, "Please enter food name!", Toast.LENGTH_SHORT).show();
+            } else {
+                reference.child(user.getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
+                            FoodModel model = dataSnapshot.getValue(FoodModel.class);
+                            if (searchET.getText().toString().equals(model.getFoodName())) {
+                                usersList.clear();
+                                usersList.add(model);
+                                recyclerView.setAdapter(adapter);
+                                adapter.notifyDataSetChanged();
+                                break;
+                            }
+                        }
+                    }
+                    @Override public void onCancelled(@NonNull DatabaseError error) { }
+                });
             }
-            @Override public void onChildChanged(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) { }
-            @Override public void onChildRemoved(@NonNull DataSnapshot snapshot) { }
-            @Override public void onChildMoved(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) { }
-            @Override public void onCancelled(@NonNull DatabaseError error) { }
+        }
         });
+
+        reference.child(user.getUid()).orderByKey().addChildEventListener(new ChildEventListener() {
+                                @Override
+                                public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
+                                    FoodModel model;
+                                    String id = snapshot.getKey();
+                                    String imgURL = snapshot.child("imgURL").getValue().toString();
+                                    String foodName = snapshot.child("foodName").getValue().toString();
+                                    String quantity = snapshot.child("quantity").getValue().toString();
+                                    String price = snapshot.child("price").getValue().toString();
+                                    String description = snapshot.child("description").getValue().toString();
+                                    model = new FoodModel(id, foodName, quantity, price, description, imgURL);
+                                    usersList.add(model);
+                                    recyclerView.setAdapter(adapter);
+                                    adapter.notifyDataSetChanged();
+                                }
+
+                                @Override
+                                public void onChildChanged(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
+                                }
+
+                                @Override
+                                public void onChildRemoved(@NonNull DataSnapshot snapshot) {
+                                }
+
+                                @Override
+                                public void onChildMoved(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
+                                }
+
+                                @Override
+                                public void onCancelled(@NonNull DatabaseError error) {
+                                }
+                            });
         adapter = new FoodAdapter(usersList, new FoodAdapter.itemOnClick() {
             @Override
             public void itemDelete(int position, FoodModel model) {
